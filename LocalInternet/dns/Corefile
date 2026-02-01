@@ -1,0 +1,6 @@
+. {
+    log
+    errors
+    file /etc/coredns/db.psx psx
+    reload 5s
+}

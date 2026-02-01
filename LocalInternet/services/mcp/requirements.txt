@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+mcp
+requests
+python-jose[cryptography]
+sse-starlette

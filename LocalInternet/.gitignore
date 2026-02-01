@@ -1,0 +1,29 @@
+# Data
+data/
+services/compute/tokens/*
+!services/compute/tokens/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Environment
+.env
+
+# DNS
+dns/db.psx
+!dns/db.psx.example
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

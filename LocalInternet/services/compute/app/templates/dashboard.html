@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSX COMPUTE | OS TERMINAL</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --dark-bg: #0a0a0a;
+            --card-bg: #141414;
+            --terminal-font: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--neon-green);
+            font-family: var(--terminal-font);
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            border-bottom: 1px solid var(--neon-green);
+            background-color: var(--dark-bg);
+        }
+
+        .navbar-brand {
+            color: var(--neon-green) !important;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 0;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--neon-green);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .progress {
+            background-color: #222;
+            height: 8px;
+            border-radius: 0;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            background-color: var(--neon-green);
+        }
+
+        .agent-card {
+            border-left: 4px solid var(--neon-green);
+        }
+
+        .proc-table {
+            font-size: 0.8rem;
+            color: #888;
+            width: 100%;
+        }
+
+        .proc-table th {
+            text-align: left;
+            border-bottom: 1px solid #333;
+            color: var(--neon-green);
+        }
+
+        .status-dot {
+            height: 10px;
+            width: 10px;
+            background-color: var(--neon-green);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 255, 65, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loader">
+        <div>INITIALIZING COMPUTE PROTOCOLS...</div>
+    </div>
+
+    <div class="scanline"></div>
+
+    <nav class="navbar mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand">
+                <span class="status-dot"></span> PSX-COMPUTE v2.0 // NODE_10.5.0.7
+            </span>
+            <div class="text-secondary" id="clock">00:00:00</div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- System Stats -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="text-secondary small">CPU LOAD</div>
+                    <div class="stat-value" id="sys-cpu">0%</div>
+                    <div class="progress"><div class="progress-bar" id="sys-cpu-bar" style="width: 0%"></div></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="text-secondary small">MEMORY USAGE</div>
+                    <div class="stat-value" id="sys-mem">0%</div>
+                    <div class="progress"><div class="progress-bar" id="sys-mem-bar" style="width: 0%"></div></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="text-secondary small">DISK CAPACITY</div>
+                    <div class="stat-value" id="sys-disk">0%</div>
+                    <div class="progress"><div class="progress-bar" id="sys-disk-bar" style="width: 0%"></div></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="text-secondary small">UPTIME</div>
+                    <div class="stat-value small mt-2" id="sys-uptime">0:00:00</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="mt-4 mb-3 fs-5 text-uppercase opacity-75">Active Neural Entities (Agents)</h2>
+        
+        <div class="row" id="agent-grid">
+            <!-- Agents will be injected here -->
+        </div>
+    </div>
+
+    <script>
+        async function updateStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+
+                // Update Clock
+                document.getElementById('clock').innerText = data.system.timestamp;
+
+                // Update System Cards
+                document.getElementById('sys-cpu').innerText = data.system.cpu + '%';
+                document.getElementById('sys-cpu-bar').style.width = data.system.cpu + '%';
+                
+                document.getElementById('sys-mem').innerText = data.system.mem + '%';
+                document.getElementById('sys-mem-bar').style.width = data.system.mem + '%';
+                
+                document.getElementById('sys-disk').innerText = data.system.disk + '%';
+                document.getElementById('sys-disk-bar').style.width = data.system.disk + '%';
+                
+                document.getElementById('sys-uptime').innerText = data.system.uptime;
+
+                // Update Agents
+                const grid = document.getElementById('agent-grid');
+                if (data.agents.length === 0) {
+                    grid.innerHTML = '<div class="col-12 text-center opacity-50 mt-5">NO ACTIVE AGENTS DETECTED ON GRID</div>';
+                } else {
+                    let html = '';
+                    data.agents.forEach(agent => {
+                        let procsHtml = '';
+                        agent.procs.forEach(p => {
+                            procsHtml += `<tr><td>${p.pid}</td><td>${p.name}</td><td>${p.cpu_percent}%</td><td>${p.uptime}</td></tr>`;
+                        });
+
+                        html += `
+                            <div class="col-md-6 col-lg-4">
+                                <div class="stat-card agent-card">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h3 class="h5 m-0">${agent.user.toUpperCase()}</h3>
+                                        <span class="badge bg-dark border border-success text-success">${agent.proc_count} PROCS</span>
+                                    </div>
+                                    <div class="small opacity-75 mb-3">
+                                        CPU: ${agent.cpu}% | MEM: ${agent.mem_mb}MB
+                                    </div>
+                                    <table class="proc-table">
+                                        <thead>
+                                            <tr><th>PID</th><th>NAME</th><th>CPU</th><th>UPTIME</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            ${procsHtml}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    grid.innerHTML = html;
+                }
+
+                // Hide loader on first success
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+
+            } catch (error) {
+                console.error('Grid communication error:', error);
+            }
+        }
+
+        // Initial update and interval
+        updateStats();
+        setInterval(updateStats, 3000);
+    </script>
+</body>
+</html>

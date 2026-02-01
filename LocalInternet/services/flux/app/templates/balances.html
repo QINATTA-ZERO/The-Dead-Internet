@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Balances // Flux</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #050505; --panel-bg: #0a0f0d; --border-color: #1a2f25; --text-main: #c0dcd0; --text-muted: #88a095; --accent: #ffcc00; --accent-dim: #ffcc0022; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        .sidebar { background-color: var(--panel-bg); border-right: 1px solid var(--border-color); height: 100vh; padding: 20px; position: fixed; width: 240px; }
+        .main-content { margin-left: 240px; padding: 40px; }
+        .nav-link { color: var(--text-muted); font-family: "Share Tech Mono"; text-transform: uppercase; padding: 12px 20px; border-radius: 0; }
+        .nav-link:hover { color: #fff; background: var(--accent-dim); }
+        .nav-link.active { background: var(--accent); color: #000; font-weight: bold; }
+        .card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 0; padding: 40px; }
+        .balance-amount { font-size: 4rem; font-weight: 700; color: var(--accent); font-family: "Share Tech Mono"; }
+        .btn-primary { background-color: var(--accent); color: #000; border: none; font-family: "Share Tech Mono"; font-weight: bold; padding: 15px 40px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h3 class="mb-5 font-mono text-white">FLUX_PORTAL</h3>
+    <nav class="nav flex-column">
+        <a class="nav-link" href="/">DASHBOARD</a>
+        <a class="nav-link" href="/payments">PAYMENTS</a>
+        <a class="nav-link active" href="/balances">BALANCES</a>
+        <a class="nav-link" href="/developers">DEVELOPERS</a>
+    </nav>
+</div>
+<div class="main-content">
+    <h2 class="font-mono text-white border-bottom border-secondary pb-3 mb-5">// ACCOUNT_LIQUIDITY</h2>
+    
+    {% if request.query_params.get('success') %}
+    <div class="alert alert-success bg-dark text-success border-success rounded-0 font-mono small mb-4">>> PAYOUT_SUCCESSFUL: CREDITS_TRANSFERRED</div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card text-center">
+                <div class="font-mono text-muted small uppercase mb-3">FLUX_INTERNAL_REVENUE</div>
+                <div class="balance-amount">{{ "{:,.2f}".format(balance) }} <span style="font-size: 1.5rem;">VOX</span></div>
+                <div class="mt-5">
+                    <form action="/payout" method="post">
+                        <button type="submit" class="btn btn-primary btn-lg" {% if balance <= 0 %}disabled{% endif %}>
+                            INITIATE_PAYOUT_TO_BANK
+                        </button>
+                    </form>
+                </div>
+                <p class="mt-4 small text-muted font-mono">// DESTINATION: {{ user }}@local_vault</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

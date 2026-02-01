@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payments // Flux</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #050505; --panel-bg: #0a0f0d; --border-color: #1a2f25; --text-main: #c0dcd0; --text-muted: #88a095; --accent: #ffcc00; --accent-dim: #ffcc0022; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        .sidebar { background-color: var(--panel-bg); border-right: 1px solid var(--border-color); height: 100vh; padding: 20px; position: fixed; width: 240px; }
+        .main-content { margin-left: 240px; padding: 40px; }
+        .nav-link { color: var(--text-muted); font-family: "Share Tech Mono"; text-transform: uppercase; padding: 12px 20px; border-radius: 0; }
+        .nav-link:hover { color: #fff; background: var(--accent-dim); }
+        .nav-link.active { background: var(--accent); color: #000; font-weight: bold; }
+        .card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 0; padding: 20px; }
+        .table { color: var(--text-main); border-color: var(--border-color); }
+        .table thead th { color: var(--accent); font-family: "Share Tech Mono"; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h3 class="mb-5 font-mono text-white">FLUX_PORTAL</h3>
+    <nav class="nav flex-column">
+        <a class="nav-link" href="/">DASHBOARD</a>
+        <a class="nav-link active" href="/payments">PAYMENTS</a>
+        <a class="nav-link" href="/balances">BALANCES</a>
+        <a class="nav-link" href="/developers">DEVELOPERS</a>
+    </nav>
+</div>
+<div class="main-content">
+    <h2 class="font-mono text-white border-bottom border-secondary pb-3 mb-5">// TRANSACTION_HISTORY</h2>
+    <div class="card">
+        <table class="table table-hover align-middle">
+            <thead><tr><th>SESSION_ID</th><th>QUANTITY</th><th>STATUS</th><th>TEMPORAL_STAMP</th></tr></thead>
+            <tbody>
+                {% for s in sessions %}
+                <tr>
+                    <td class="font-mono small text-muted">{{ s.id }}</td>
+                    <td class="font-mono"><strong>{{ "{:,.2f}".format(s.amount) }} VOX</strong></td>
+                    <td>
+                        <span class="badge {% if s.status == 'completed' %}bg-success text-black{% elif s.status == 'pending' %}bg-warning text-black{% else %}bg-danger{% endif %} font-mono">
+                            {{ s.status|upper }}
+                        </span>
+                    </td>
+                    <td class="font-mono small">{{ s.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-center text-muted font-mono py-5">// NO_HISTORY_LOGGED</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

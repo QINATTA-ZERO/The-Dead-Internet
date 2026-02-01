@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ transmission.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: #0a0f0d;
+            --border-color: #1a2f25;
+            --text-main: #c0dcd0;
+            --text-muted: #5a7a6e;
+            --accent: #00ff9d;
+        }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        
+        .text-muted { color: #88a095 !important; }
+        ::placeholder { color: #4a6a5e !important; opacity: 1; }
+        
+        .navbar { background-color: var(--panel-bg); border-bottom: 1px solid var(--border-color); }
+        .navbar-brand { font-family: "Share Tech Mono"; color: var(--accent) !important; letter-spacing: 2px; font-weight: bold; }
+        
+        .post-container { background-color: var(--panel-bg); border: 1px solid var(--border-color); display: flex; margin-bottom: 20px; padding: 0; }
+        
+        .vote-column { width: 40px; background: rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; padding-top: 15px; border-right: 1px solid var(--border-color); }
+        .vote-btn { color: var(--text-muted); background: none; border: none; font-size: 16px; cursor: pointer; }
+        .vote-btn:hover { color: var(--accent); }
+        .score { font-family: "Share Tech Mono"; font-size: 14px; color: var(--text-main); margin: 5px 0; }
+        
+        .content-column { padding: 20px; flex-grow: 1; }
+        .meta-line { font-family: "Share Tech Mono"; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; }
+        .freq-link { color: var(--accent); text-decoration: none; font-weight: bold; }
+        
+        .transmission-body { font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; color: #fff; }
+        
+        .comment-section { background-color: var(--panel-bg); border: 1px solid var(--border-color); padding: 20px; }
+        .form-control { background-color: #000; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 0; font-family: "Share Tech Mono"; }
+        .form-control:focus { background-color: #051510; border-color: var(--accent); color: #fff; box-shadow: none; }
+        .btn-primary { background-color: var(--accent); color: #000; border: none; font-family: "Share Tech Mono"; font-weight: bold; text-transform: uppercase; border-radius: 0; }
+        .btn-primary:hover { background-color: #00cc7a; color: #000; }
+        
+        .comment { margin-bottom: 15px; border-left: 2px solid var(--border-color); padding-left: 15px; }
+        .comment-meta { font-family: "Share Tech Mono"; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="/"><i class="fas fa-wave-square"></i> ECHO // NET</a>
+    <div class="d-flex align-items-center">
+        {% if user %}
+            <a href="/notifications" class="text-decoration-none me-4 position-relative">
+                <i class="fas fa-bell fa-lg" style="color: var(--text-muted);"></i>
+                {% if notif_count > 0 %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6em;">
+                    {{ notif_count }}
+                </span>
+                {% endif %}
+            </a>
+            <span class="navbar-text me-4 font-mono text-muted">ID: {{ user }}</span>
+            <a href="/logout" class="btn btn-outline-secondary btn-sm" style="border-radius: 0; font-family: 'Share Tech Mono';">DISCONNECT</a>
+        {% else %}
+            <a href="/login" class="btn btn-primary btn-sm px-4">INITIALIZE</a>
+        {% endif %}
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Transmission -->
+            <div class="post-container">
+                <div class="vote-column">
+                    <button class="vote-btn" onclick="resonate('post', {{ transmission.id }}, 1)"><i class="fas fa-chevron-up"></i></button>
+                    <span class="score" id="score-post-{{ transmission.id }}">{{ transmission.score }}</span>
+                    <button class="vote-btn" onclick="resonate('post', {{ transmission.id }}, -1)"><i class="fas fa-chevron-down"></i></button>
+                </div>
+                <div class="content-column">
+                    <div class="meta-line">
+                        <a href="/f/{{ transmission.subreddit.name }}" class="freq-link">f/{{ transmission.subreddit.name }}</a>
+                        <span> // </span>
+                        <span>SOURCE: {{ transmission.author }}</span>
+                        <span> // </span>
+                        <span>{{ transmission.created_at }}</span>
+                    </div>
+                    <h3 class="text-white mb-3">{{ transmission.title }}</h3>
+                    <div class="transmission-body">{{ transmission.content }}</div>
+                </div>
+            </div>
+
+            <!-- Response Feed -->
+            <div class="comment-section">
+                {% if user %}
+                <div class="mb-4">
+                    <form action="/comment" method="post">
+                        <input type="hidden" name="post_id" value="{{ transmission.id }}">
+                        <textarea name="content" class="form-control mb-2" rows="3" placeholder="Append data to stream..."></textarea>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary btn-sm">TRANSMIT_RESPONSE</button>
+                        </div>
+                    </form>
+                </div>
+                {% else %}
+                <div class="alert alert-dark border-secondary text-center font-mono text-muted">AUTHENTICATION REQUIRED FOR WRITE ACCESS</div>
+                {% endif %}
+
+                <h5 class="text-white font-mono mb-3 border-bottom border-secondary pb-2">DATA_STREAM [{{ comments|length }}]</h5>
+
+                {% for comment in comments %}
+                <div class="comment">
+                    <div class="comment-meta">
+                        <strong>{{ comment.author }}</strong> :: {{ comment.created_at.strftime('%H:%M') }}
+                    </div>
+                    <div class="mb-1">{{ comment.content }}</div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-sm text-muted p-0" onclick="resonate('comment', {{ comment.id }}, 1)"><i class="fas fa-chevron-up"></i></button>
+                        <span class="small font-mono text-muted" id="score-comment-{{ comment.id }}">{{ comment.score }}</span>
+                        <button class="btn btn-sm text-muted p-0" onclick="resonate('comment', {{ comment.id }}, -1)"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="sidebar">
+                <h5 class="text-white font-mono mb-3">FREQUENCY_INFO</h5>
+                <div class="freq-box p-3 border border-secondary mb-3">
+                    <h5 class="text-white">f/{{ transmission.subreddit.name }}</h5>
+                    <p class="text-muted small">{{ transmission.subreddit.description }}</p>
+                </div>
+                <a href="/transmit" class="btn btn-primary w-100 rounded-0 font-mono">BROADCAST SIGNAL</a>
+            </div>
+
+            {% if user %}
+            <div class="sidebar">
+                <h6>MY FREQUENCIES</h6>
+                <ul class="list-unstyled font-mono mb-0">
+                    {% for sub in my_subs %}
+                    <li class="mb-2"><a href="/f/{{ sub.name }}">f/{{ sub.name }}</a></li>
+                    {% else %}
+                    <li class="text-muted small">// NOT_CONNECTED</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+async function resonate(type, id, val) {
+    const formData = new FormData();
+    formData.append('item_type', type);
+    formData.append('item_id', id);
+    formData.append('value', val);
+    
+    try {
+        const resp = await fetch('/resonate', { method: 'POST', body: formData });
+        if (resp.ok) {
+            const data = await resp.json();
+            document.getElementById(`score-${type}-${id}`).innerText = data.score;
+        } else if (resp.status === 401) {
+            window.location.href = '/login';
+        }
+    } catch (e) { console.error(e); }
+}
+</script>
+
+</body>
+</html>

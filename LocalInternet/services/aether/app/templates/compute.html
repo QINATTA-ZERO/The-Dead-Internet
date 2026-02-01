@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Compute // Aether</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #050505; --panel-bg: #0a0f0d; --border-color: #1a2f25; --text-main: #c0dcd0; --text-muted: #88a095; --accent: #00ff9d; --accent-dim: #00ff9d22; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        .sidebar { background-color: var(--panel-bg); border-right: 1px solid var(--border-color); height: 100vh; padding: 20px; position: fixed; width: 240px; }
+        .main-content { margin-left: 240px; padding: 40px; }
+        .nav-link { color: var(--text-muted); font-family: "Share Tech Mono"; text-transform: uppercase; padding: 12px 20px; border-radius: 0; }
+        .nav-link:hover { color: #fff; background: var(--accent-dim); }
+        .nav-link.active { background: var(--accent); color: #000; font-weight: bold; }
+        .card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 0; padding: 20px; }
+        .stat-val { font-size: 2.5rem; font-weight: 700; color: #fff; font-family: "Share Tech Mono"; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h3 class="mb-5 font-mono text-white">AETHER_OS</h3>
+    <nav class="nav flex-column">
+        <a class="nav-link" href="/">DASHBOARD</a>
+        <a class="nav-link" href="/domains">DOMAINS</a>
+        <a class="nav-link active" href="/compute">COMPUTE</a>
+        <a class="nav-link" href="/storage">STORAGE</a>
+        <a class="nav-link" href="/billing">BILLING</a>
+    </nav>
+</div>
+<div class="main-content">
+    <h2 class="font-mono text-white border-bottom border-secondary pb-3 mb-5">// COMPUTE_RESOURCES</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="font-mono text-muted small uppercase mb-2">ALLOCATED_CPU</div>
+                <div class="stat-val">{{ stats.cpu }}%</div>
+                <div class="progress mt-2 bg-black" style="height: 4px;"><div class="progress-bar bg-success" style="width: {{ stats.cpu }}%"></div></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="font-mono text-muted small uppercase mb-2">ALLOCATED_RAM</div>
+                <div class="stat-val">{{ stats.memory }}MB</div>
+                <div class="progress mt-2 bg-black" style="height: 4px;"><div class="progress-bar bg-info" style="width: 20%"></div></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="font-mono text-muted small uppercase mb-2">ACTIVE_INSTANCES</div>
+                <div class="stat-val">{{ stats.deployments_active }}</div>
+                <div class="text-success small mt-2 font-mono">>> STATUS: STABLE</div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <h5 class="font-mono text-white mb-4">DEPLOYED_INSTANCES</h5>
+        <table class="table table-dark table-hover">
+            <thead><tr><th>INSTANCE_ID</th><th>STATUS</th><th>UPTIME</th></tr></thead>
+            <tbody>
+                {% for d in deployments %}
+                <tr>
+                    <td class="font-mono"><code>{{ d.name.lower().replace(' ', '-') }}.inst</code></td>
+                    <td><span class="badge bg-success text-black font-mono">RUNNING</span></td>
+                    <td class="font-mono small">99.9%</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" class="text-center text-muted font-mono py-4">// NO_INSTANCES_PROVISIONED</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

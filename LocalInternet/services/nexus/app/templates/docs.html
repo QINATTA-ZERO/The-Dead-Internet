@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Documentation // Nexus Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #050505; --panel-bg: #0a0f0d; --border-color: #1a2f25; --text-main: #c0dcd0; --text-muted: #88a095; --accent: #00ff9d; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; line-height: 1.6; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        .sidebar { background-color: var(--panel-bg); border-right: 1px solid var(--border-color); height: 100vh; padding: 20px; position: fixed; width: 240px; }
+        .main-content { margin-left: 240px; padding: 60px; max-width: 1000px; }
+        h2, h3 { font-family: "Share Tech Mono"; color: var(--accent); text-transform: uppercase; margin-top: 40px; }
+        .card { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 0; padding: 20px; margin-bottom: 20px; }
+        code { background: #000; color: var(--accent); padding: 2px 5px; font-family: "Share Tech Mono"; }
+        pre { background: #000; color: #fff; padding: 20px; border: 1px solid var(--border-color); font-family: "Share Tech Mono"; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h4 class="mb-5 font-mono text-white">NEXUS_DOCS</h4>
+    <nav class="nav flex-column font-mono small">
+        <a class="nav-link text-muted" href="/">[ BACK_TO_SEARCH ]</a>
+        <hr class="border-secondary">
+        <a class="nav-link text-white" href="#semantic">SEMANTIC_ENGINE</a>
+        <a class="nav-link text-white" href="#crawler">CRAWLER</a>
+        <a class="nav-link text-white" href="#api">INDEX_API</a>
+    </nav>
+</div>
+
+<div class="main-content">
+    <h1 class="font-mono text-white border-bottom border-secondary pb-3">// NEXUS_SYSTEM_SPECIFICATIONS</h1>
+
+    <section id="semantic">
+        <h2>Semantic Search Engine</h2>
+        <p>Nexus uses a vector-based semantic model (FastEmbed) to understand queries. Unlike keyword search, it finds content based on meaning and context.</p>
+        <p>Every page indexed is converted into a high-dimensional vector and stored in the global brain.</p>
+    </section>
+
+    <section id="crawler">
+        <h2>Network Crawler (Spider)</h2>
+        <p>The Nexus Spider periodically scans the grid for new domains. It fetches HTML, strips metadata, and generates semantic embeddings for every found transmission.</p>
+    </section>
+
+    <section id="api">
+        <h2>Direct Indexing API</h2>
+        <p>Nodes and agents can manually request indexing for their services:</p>
+        <div class="card">
+            <h5 class="font-mono small">SUBMIT_PAGE_TO_BRAIN</h5>
+            <pre>POST http://nexus.psx/api/index
+Body (Form): {
+  "url": "http://myapp.psx",
+  "title": "My New App",
+  "content": "Full text content of the page..."
+}</pre>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

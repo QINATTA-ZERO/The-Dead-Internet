@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PSX Bank // VOX</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: #0a0f0d;
+            --border-color: #1a2f25;
+            --text-main: #c0dcd0;
+            --text-muted: #88a095;
+            --accent: #00ff9d;
+            --gold: #ffcc00;
+        }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        
+        .navbar { background-color: var(--panel-bg); border-bottom: 1px solid var(--border-color); }
+        .navbar-brand { font-family: "Share Tech Mono"; color: var(--gold) !important; letter-spacing: 2px; font-weight: bold; }
+        
+        .balance-card { background: linear-gradient(135deg, #0a1a10 0%, #050505 100%); border: 1px solid var(--accent); padding: 30px; border-radius: 0; margin-bottom: 30px; position: relative; overflow: hidden; }
+        .balance-card::after { content: "VOX_CORE"; position: absolute; right: -20px; bottom: -10px; font-size: 5rem; opacity: 0.05; font-family: "Share Tech Mono"; font-weight: bold; }
+        
+        .credits-val { font-size: 3.5rem; font-weight: 700; color: var(--gold); font-family: "Share Tech Mono"; }
+        .credits-label { text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); }
+        
+        .tx-table { background-color: var(--panel-bg); border: 1px solid var(--border-color); width: 100%; border-collapse: collapse; }
+        .tx-table th { background-color: rgba(0, 255, 157, 0.05); color: var(--accent); font-family: "Share Tech Mono"; padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .tx-table td { padding: 12px; border-bottom: 1px solid var(--border-color); }
+        
+        .form-control { background-color: #000; border: 1px solid var(--border-color); color: #fff; border-radius: 0; font-family: "Share Tech Mono"; }
+        .form-control:focus { background-color: #051510; border-color: var(--accent); box-shadow: none; color: #fff; }
+        
+        .btn-transfer { background-color: var(--gold); color: #000; border: none; font-weight: bold; font-family: "Share Tech Mono"; border-radius: 0; padding: 12px; text-transform: uppercase; }
+        .btn-transfer:hover { background-color: #e6b800; }
+        
+        .status-success { color: var(--accent); font-family: "Share Tech Mono"; }
+        .status-error { color: #ff3333; font-family: "Share Tech Mono"; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="/"><i class="fas fa-microchip"></i> PSX // BANK</a>
+    <div class="d-flex align-items-center">
+        <a href="/docs" class="nav-link font-mono text-muted me-4">GUIDE</a>
+        <span class="navbar-text me-4 font-mono text-muted">USER: {{ user }}</span>
+        <a href="/logout" class="btn btn-outline-secondary btn-sm rounded-0">TERMINATE_SESSION</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="balance-card">
+                <div class="credits-label">Current Liquidity</div>
+                <div class="credits-val">{{ "{:,.2f}".format(wallet.balance) }} <span style="font-size: 1rem;">VOX</span></div>
+                <div class="mt-3 small text-muted font-mono">WALLET_ID: {{ wallet.id }} // STATUS: ONLINE</div>
+            </div>
+
+            <h5 class="font-mono mb-3"><i class="fas fa-list-ul"></i> TRANSACTION_LEDGER</h5>
+            <table class="tx-table">
+                <thead>
+                    <tr>
+                        <th>TIMESTAMP</th>
+                        <th>TYPE</th>
+                        <th>ENTITY</th>
+                        <th>AMOUNT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tx in transactions %}
+                    <tr>
+                        <td class="font-mono small">{{ tx.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            {% if tx.sender == user %}
+                            <span style="color: #ff5555;">[OUTGOING]</span>
+                            {% else %}
+                            <span style="color: #55ff55;">[INCOMING]</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if tx.sender == user %}
+                            {{ tx.recipient }}
+                            {% else %}
+                            {{ tx.sender }}
+                            {% endif %}
+                        </td>
+                        <td class="font-mono fw-bold">
+                            {% if tx.sender == user %}-{% else %}+{% endif %}{{ "{:,.2f}".format(tx.amount) }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center p-5 text-muted">No transactions registered in current cycle.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-4 border border-secondary bg-dark">
+                <h5 class="font-mono text-white mb-4">INITIATE_TRANSFER</h5>
+                
+                {% if error %}
+                <div class="alert alert-danger rounded-0 font-mono small">{{ error }}</div>
+                {% endif %}
+                
+                {% if request.query_params.get('success') %}
+                <div class="alert alert-success rounded-0 font-mono small">Transfer complete. Ledger updated.</div>
+                {% endif %}
+
+                <form action="/transfer" method="post">
+                    <div class="mb-3">
+                        <label class="small text-muted font-mono">RECIPIENT_ID</label>
+                        <input type="text" name="recipient" class="form-control" placeholder="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-muted font-mono">QUANTITY (VOX)</label>
+                        <input type="number" name="amount" class="form-control" placeholder="0.00" step="0.01" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="small text-muted font-mono">TRANSACTION_NOTE</label>
+                        <input type="text" name="note" class="form-control" placeholder="Optional...">
+                    </div>
+                    <button type="submit" class="btn btn-transfer w-100">EXECUTE_PAYMENT</button>
+                </form>
+            </div>
+            
+            <div class="mt-4 p-3 border border-warning bg-black text-warning font-mono small">
+                <i class="fas fa-exclamation-triangle"></i> WARNING: All transactions are permanent and recorded on the PSX global ledger. Ensure recipient ID is correct before execution.
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

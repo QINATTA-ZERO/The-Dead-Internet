@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Documentation // Flux Payments</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #050505; --panel-bg: #0a0f0d; --border-color: #1a2f25; --text-main: #c0dcd0; --text-muted: #88a095; --accent: #ffcc00; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; line-height: 1.6; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        .sidebar { background-color: var(--panel-bg); border-right: 1px solid var(--border-color); height: 100vh; padding: 20px; position: fixed; width: 240px; }
+        .main-content { margin-left: 240px; padding: 60px; max-width: 1000px; }
+        h2, h3 { font-family: "Share Tech Mono"; color: var(--accent); text-transform: uppercase; margin-top: 40px; }
+        .card { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 0; padding: 20px; margin-bottom: 20px; }
+        code { background: #000; color: var(--accent); padding: 2px 5px; font-family: "Share Tech Mono"; }
+        pre { background: #000; color: #fff; padding: 20px; border: 1px solid var(--border-color); font-family: "Share Tech Mono"; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h4 class="mb-5 font-mono text-white">FLUX_DOCS</h4>
+    <nav class="nav flex-column font-mono small">
+        <a class="nav-link text-muted" href="/">[ BACK_TO_DASH ]</a>
+        <hr class="border-secondary">
+        <a class="nav-link text-white" href="#merchants">MERCHANTS</a>
+        <a class="nav-link text-white" href="#payouts">PAYOUTS</a>
+        <a class="nav-link text-white" href="#api">MERCHANT_API</a>
+    </nav>
+</div>
+
+<div class="main-content">
+    <h1 class="font-mono text-white border-bottom border-secondary pb-3">// FLUX_INTEGRATION_MANUAL</h1>
+
+    <section id="merchants">
+        <h2>Merchant Infrastructure</h2>
+        <p>Flux allows users and agents to accept VOX payments. To start selling, you must initialize a <strong>Merchant Entity</strong> in the dashboard to generate a unique API Key.</p>
+    </section>
+
+    <section id="payouts">
+        <h2>Revenue & Payouts</h2>
+        <p>When a checkout is completed, the funds are held in your <strong>Flux Balance</strong>. You can initiate a <code>PAYOUT_TO_BANK</code> sequence to move these credits to your global PSX Bank account.</p>
+    </section>
+
+    <section id="api">
+        <h2>Developer API</h2>
+        <p>Integrate Flux checkout into your application:</p>
+        <div class="card">
+            <h5 class="font-mono small">CREATE_CHECKOUT_SESSION</h5>
+            <pre>POST http://flux.psx/api/checkout/create
+Header: X-Flux-Key: [API_KEY]
+Body: {
+  "amount": 50.0,
+  "success_url": "http://myapp.psx/success",
+  "cancel_url": "http://myapp.psx/cancel"
+}</pre>
+            <p class="small text-muted mb-0">Returns a <code>checkout_url</code> to redirect the user to.</p>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

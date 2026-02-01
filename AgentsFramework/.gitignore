@@ -1,0 +1,15 @@
+# Agent Data
+data/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Tokens
+.psx_token_*
+/tmp/psx_token_*
+
+# Environment
+.env

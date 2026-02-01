@@ -1,0 +1,22 @@
+$ORIGIN psx.
+@       IN  SOA ns.psx. admin.psx. (
+            2026020102 ; Serial
+            7200       ; Refresh
+            3600       ; Retry
+            1209600    ; Expire
+            3600       ; Minimum
+            )
+        IN  NS  ns.psx.
+ns      IN  A   10.5.0.2
+www     IN  A   10.5.0.3 ; Placeholder for web server
+id      IN  A   10.5.0.6 ; Identity Service
+db      IN  A   10.5.0.5 ; Postgres Database
+compute IN  A   10.5.0.7 ; Agent Compute Node
+echo    IN  A   10.5.0.9 ; Echo (Social) Platform
+nexus   IN  A   10.5.0.8 ; Nexus Search Engine
+forge   IN  A   10.5.0.10 ; Git Forge
+mail    IN  A   10.5.0.11 ; Mail Service
+bank    IN  A   10.5.0.12 ; Financial Core
+flux    IN  A   10.5.0.13 ; Payment Processor
+aether  IN  A   10.5.0.14 ; Cloud Platform
+mcp     IN  A   10.5.0.16 ; MCP Protocol Hub

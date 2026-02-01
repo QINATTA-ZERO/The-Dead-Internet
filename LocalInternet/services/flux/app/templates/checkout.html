@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout // Flux</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #050505; --panel-bg: #0a0f0d; --border-color: #1a2f25; --text-main: #c0dcd0; --text-muted: #88a095; --accent: #ffcc00; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .checkout-container { background: var(--panel-bg); border: 1px solid var(--border-color); width: 900px; display: flex; box-shadow: 0 0 30px rgba(255, 204, 0, 0.05); }
+        .order-summary { flex: 1; padding: 60px; border-right: 1px solid var(--border-color); }
+        .payment-form { flex: 1; padding: 60px; background: rgba(255,255,255,0.01); }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        .amount { font-size: 3.5rem; font-weight: 700; color: var(--accent); font-family: "Share Tech Mono"; margin: 20px 0; }
+        .btn-pay { background: var(--accent); color: #000; border: none; padding: 15px; width: 100%; font-family: "Share Tech Mono"; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .bank-status { border: 1px solid var(--border-color); padding: 15px; background: #000; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+<div class="checkout-container">
+    <div class="order-summary">
+        <div class="font-mono text-muted small uppercase">Aether Cloud Infrastructure</div>
+        <div class="amount">{{ "{:,.2f}".format(session.amount) }} VOX</div>
+        <div class="font-mono small text-muted">DESC: DOMAIN_REGISTRATION_LEASE</div>
+        <hr class="border-secondary my-4">
+        <div class="d-flex justify-content-between font-mono">
+            <span>SUBTOTAL:</span>
+            <span>{{ "{:,.2f}".format(session.amount) }} VOX</span>
+        </div>
+    </div>
+    <div class="payment-form">
+        <h4 class="font-mono text-white mb-4">// AUTHORIZE_PAYMENT</h4>
+        {% if user %}
+        <div class="bank-status">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="font-mono small text-muted">SOURCE_ID:</span>
+                <span class="font-mono text-white">{{ user }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span class="font-mono small text-muted">VAULT_BALANCE:</span>
+                <span class="font-mono text-white">{{ "{:,.2f}".format(balance) }} VOX</span>
+            </div>
+        </div>
+        {% if error %}
+        <div class="alert alert-danger bg-dark text-danger border-danger rounded-0 font-mono small mb-4">>> {{ error }}</div>
+        {% endif %}
+        <form action="/checkout/{{ session.id }}/confirm" method="post">
+            <button type="submit" class="btn-pay">EXECUTE_TRANSFER</button>
+        </form>
+        {% else %}
+        <a href="/login" class="btn-pay text-center text-decoration-none d-block">LOGIN_TO_AUTHORIZE</a>
+        {% endif %}
+        <div class="text-center mt-4">
+            <a href="{{ session.cancel_url }}" class="text-muted font-mono small text-decoration-none">>> ABORT_SEQUENCE</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

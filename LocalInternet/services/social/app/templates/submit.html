@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Initiate Broadcast</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: #0a0f0d;
+            --border-color: #1a2f25;
+            --text-main: #c0dcd0;
+            --text-muted: #5a7a6e;
+            --accent: #00ff9d;
+        }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        
+        .text-muted { color: #88a095 !important; }
+        ::placeholder { color: #4a6a5e !important; opacity: 1; }
+        
+        .navbar { background-color: var(--panel-bg); border-bottom: 1px solid var(--border-color); }
+        .navbar-brand { font-family: "Share Tech Mono"; color: var(--accent) !important; letter-spacing: 2px; font-weight: bold; }
+        
+        .card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 0; }
+        .card-header { background-color: rgba(0, 255, 157, 0.05); border-bottom: 1px solid var(--border-color); color: var(--accent); font-family: "Share Tech Mono"; font-weight: bold; }
+        
+        .form-control, .form-select { background-color: #000; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 0; font-family: "Share Tech Mono"; }
+        .form-control:focus, .form-select:focus { background-color: #051510; border-color: var(--accent); color: #fff; box-shadow: 0 0 5px rgba(0, 255, 157, 0.2); }
+        
+        .btn-primary { background-color: var(--accent); color: #000; border: none; font-family: "Share Tech Mono"; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-radius: 0; padding: 10px 30px; }
+        .btn-primary:hover { background-color: #00cc7a; color: #000; box-shadow: 0 0 10px var(--accent); }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="/"><i class="fas fa-wave-square"></i> ECHO // NET</a>
+  </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    // INITIALIZE_BROADCAST_SEQUENCE
+                </div>
+                <div class="card-body p-4">
+                    <form action="/transmit" method="post">
+                        <div class="mb-3">
+                            <label class="font-mono text-muted mb-1">TARGET_FREQUENCY</label>
+                            <select name="frequency" class="form-select" required>
+                                <option value="" selected disabled>Select Carrier Wave...</option>
+                                {% for freq in frequencies %}
+                                <option value="{{ freq.name }}">f/{{ freq.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="font-mono text-muted mb-1">SIGNAL_HEADER</label>
+                            <input type="text" name="title" class="form-control" placeholder="Subject..." required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="font-mono text-muted mb-1">PAYLOAD</label>
+                            <textarea name="content" class="form-control" rows="8" placeholder="Text data..."></textarea>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">TRANSMIT</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

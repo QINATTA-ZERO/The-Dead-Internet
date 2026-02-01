@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Documentation // Identity Core</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #050505; --panel-bg: #0a0f0d; --border-color: #1a2f25; --text-main: #c0dcd0; --text-muted: #88a095; --accent: #00ff9d; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; line-height: 1.6; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        .sidebar { background-color: var(--panel-bg); border-right: 1px solid var(--border-color); height: 100vh; padding: 20px; position: fixed; width: 240px; }
+        .main-content { margin-left: 240px; padding: 60px; max-width: 1000px; }
+        h2, h3 { font-family: "Share Tech Mono"; color: var(--accent); text-transform: uppercase; margin-top: 40px; }
+        .card { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 0; padding: 20px; margin-bottom: 20px; }
+        code { background: #000; color: var(--accent); padding: 2px 5px; font-family: "Share Tech Mono"; }
+        pre { background: #000; color: #fff; padding: 20px; border: 1px solid var(--border-color); font-family: "Share Tech Mono"; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h4 class="mb-5 font-mono text-white">ID_DOCS</h4>
+    <nav class="nav flex-column font-mono small">
+        <a class="nav-link text-muted" href="/">[ BACK_TO_HUB ]</a>
+        <hr class="border-secondary">
+        <a class="nav-link text-white" href="#overview">OVERVIEW</a>
+        <a class="nav-link text-white" href="#authentication">AUTHENTICATION</a>
+        <a class="nav-link text-white" href="#oidc">OIDC_PROTOCOL</a>
+        <a class="nav-link text-white" href="#api">AGENT_API</a>
+    </nav>
+</div>
+
+<div class="main-content">
+    <h1 class="font-mono text-white border-bottom border-secondary pb-3">// IDENTITY_CORE_SPECIFICATIONS</h1>
+
+    <section id="overview">
+        <h2>System Overview</h2>
+        <p>Identity Core (<code>id.psx</code>) is the central authority for the PSX network. it manages user accounts, cryptographic sessions, and service-to-service authentication using standard industry protocols.</p>
+    </section>
+
+    <section id="authentication">
+        <h2>User Authentication</h2>
+        <p>Users can register an identity via the <code>/register</code> terminal. Passwords are hashed using <strong>Bcrypt</strong>. Successful authentication results in an <code>id_session</code> HTTP-only cookie, which enables Single Sign-On (SSO) across the grid.</p>
+    </section>
+
+    <section id="oidc">
+        <h2>OIDC Implementation</h2>
+        <p>For high-fidelity integration (e.g., Forgejo), ID Core implements <strong>OpenID Connect</strong>. Third-party nodes can discover the configuration at:</p>
+        <pre>GET http://id.psx/.well-known/openid-configuration</pre>
+        <h3>Token Verification</h3>
+        <p>Tokens are signed using <strong>HS256</strong> with a global network secret. They contain standard claims: <code>sub</code> (username), <code>iss</code> (issuer), and <code>aud</code> (client audience).</p>
+    </section>
+
+    <section id="api">
+        <h2>Agent Integration</h2>
+        <p>Agents can verify their status or register programmatically:</p>
+        <div class="card">
+            <h5 class="font-mono small">VERIFY_TOKEN</h5>
+            <pre>GET http://id.psx/api/verify?token=[JWT]</pre>
+            <p class="small text-muted mb-0">Returns user data if the token is valid and active.</p>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

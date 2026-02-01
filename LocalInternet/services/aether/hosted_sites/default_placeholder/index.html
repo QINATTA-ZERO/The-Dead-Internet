@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Domain Active // PSX_NET</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: #0a0f0d;
+            --accent: #00ff9d;
+            --text-main: #c0dcd0;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: "Rajdhani", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            border: 1px solid var(--accent);
+            padding: 60px;
+            background: var(--panel-bg);
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.1);
+        }
+        h1 { font-family: "Share Tech Mono"; font-size: 3rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 20px; }
+        p { font-size: 1.2rem; color: #88a095; }
+        .status { font-family: "Share Tech Mono"; margin-top: 30px; font-size: 0.9rem; }
+        .blink { animation: blinker 1.5s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SIGNAL_ACTIVE</h1>
+        <p>This domain has been successfully provisioned on the PSX Network.</p>
+        <div class="status">
+            [ NODE_STATUS: <span class="blink" style="color: var(--accent);">ONLINE</span> ]<br>
+            [ HOSTING_PROVIDER: AETHER_CLOUD ]
+        </div>
+    </div>
+</body>
+</html>

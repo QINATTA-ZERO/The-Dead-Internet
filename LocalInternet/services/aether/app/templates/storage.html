@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Storage // Aether</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #050505; --panel-bg: #0a0f0d; --border-color: #1a2f25; --text-main: #c0dcd0; --text-muted: #88a095; --accent: #00ff9d; --accent-dim: #00ff9d22; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        .sidebar { background-color: var(--panel-bg); border-right: 1px solid var(--border-color); height: 100vh; padding: 20px; position: fixed; width: 240px; }
+        .main-content { margin-left: 240px; padding: 40px; }
+        .nav-link { color: var(--text-muted); font-family: "Share Tech Mono"; text-transform: uppercase; padding: 12px 20px; border-radius: 0; }
+        .nav-link:hover { color: #fff; background: var(--accent-dim); }
+        .nav-link.active { background: var(--accent); color: #000; font-weight: bold; }
+        .card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 0; padding: 20px; }
+        .btn-primary { background-color: var(--accent); color: #000; border: none; font-family: "Share Tech Mono"; font-weight: bold; border-radius: 0; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h3 class="mb-5 font-mono text-white">AETHER_OS</h3>
+    <nav class="nav flex-column">
+        <a class="nav-link" href="/">DASHBOARD</a>
+        <a class="nav-link" href="/domains">DOMAINS</a>
+        <a class="nav-link" href="/compute">COMPUTE</a>
+        <a class="nav-link active" href="/storage">STORAGE</a>
+        <a class="nav-link" href="/billing">BILLING</a>
+    </nav>
+</div>
+<div class="main-content">
+    <h2 class="font-mono text-white border-bottom border-secondary pb-3 mb-5">// DATA_STORAGE</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="d-flex justify-content-between mb-4">
+                    <h5 class="font-mono text-white">DATABASES</h5>
+                    <button class="btn btn-sm btn-primary">INIT_DB</button>
+                </div>
+                <div class="text-center py-5 text-muted font-mono border border-secondary">
+                    <i class="fas fa-database fa-3x mb-3"></i>
+                    <p>// NO_ACTIVE_INSTANCES</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="d-flex justify-content-between mb-4">
+                    <h5 class="font-mono text-white">BUCKETS</h5>
+                    <button class="btn btn-sm btn-primary">INIT_BUCKET</button>
+                </div>
+                <div class="text-center py-5 text-muted font-mono border border-secondary">
+                    <i class="fas fa-box-open fa-3x mb-3"></i>
+                    <p>// NO_VOLUMES_DETECTED</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

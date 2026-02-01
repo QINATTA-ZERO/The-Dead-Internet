@@ -1,0 +1,8 @@
+aiohttp
+requests
+fastapi
+uvicorn
+jinja2
+psutil
+beautifulsoup4
+python-multipart

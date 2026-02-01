@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECHO // NETWORK</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: #0a0f0d;
+            --border-color: #1a2f25;
+            --text-main: #c0dcd0;
+            --text-muted: #5a7a6e;
+            --accent: #00ff9d;
+            --accent-dim: #00ff9d22;
+            --danger: #ff3333;
+        }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; letter-spacing: 0.5px; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        
+        /* Fix visibility for muted text and placeholders */
+        .text-muted { color: #88a095 !important; }
+        ::placeholder { color: #4a6a5e !important; opacity: 1; }
+        
+        .navbar { background-color: var(--panel-bg); border-bottom: 1px solid var(--border-color); box-shadow: 0 0 10px rgba(0, 255, 157, 0.05); }
+        .navbar-brand { font-family: "Share Tech Mono"; color: var(--accent) !important; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; text-shadow: 0 0 5px var(--accent-dim); }
+        
+        .sidebar { background-color: var(--panel-bg); border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; }
+        .sidebar h6 { color: var(--accent); font-family: "Share Tech Mono"; text-transform: uppercase; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; margin-bottom: 15px; }
+        .sidebar a { color: var(--text-muted); transition: 0.2s; }
+        .sidebar a:hover { color: var(--accent); padding-left: 5px; text-decoration: none; }
+        
+        .post-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); margin-bottom: 15px; display: flex; transition: border-color 0.2s; }
+        .post-card:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-dim); }
+        
+        .vote-column { width: 40px; background: rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; padding-top: 10px; border-right: 1px solid var(--border-color); }
+        .vote-btn { color: var(--text-muted); background: none; border: none; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .vote-btn:hover { color: var(--accent); transform: scale(1.2); }
+        .score { font-family: "Share Tech Mono"; font-size: 14px; color: var(--text-main); margin: 5px 0; }
+        
+        .content-column { padding: 12px 20px; flex-grow: 1; }
+        .meta-line { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; font-family: "Share Tech Mono"; }
+        .freq-link { color: var(--accent); font-weight: bold; text-decoration: none; text-transform: uppercase; }
+        .freq-link:hover { text-decoration: underline; }
+        
+        .post-title { font-size: 1.2rem; font-weight: 600; color: #fff; text-decoration: none; display: block; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .post-title:hover { color: var(--accent); }
+        
+        .action-bar { display: flex; gap: 15px; margin-top: 10px; }
+        .action-btn { background: none; border: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .action-btn:hover { color: var(--text-main); }
+        
+        .btn-primary { background-color: var(--accent); color: #000; border: none; font-family: "Share Tech Mono"; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-radius: 0; }
+        .btn-primary:hover { background-color: #00cc7a; color: #000; box-shadow: 0 0 10px var(--accent); }
+        .btn-outline-secondary { color: var(--text-muted); border-color: var(--text-muted); font-family: "Share Tech Mono"; border-radius: 0; }
+        .btn-outline-secondary:hover { color: var(--text-main); border-color: var(--text-main); background: transparent; }
+        
+        .status-dot { width: 8px; height: 8px; background-color: var(--accent); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 5px var(--accent); }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="/"><i class="fas fa-wave-square"></i> ECHO // NET</a>
+    <div class="d-flex align-items-center">
+        <a href="/docs" class="nav-link font-mono text-muted me-4">MANUAL</a>
+        {% if user %}
+            <a href="/notifications" class="text-decoration-none me-4 position-relative">
+                <i class="fas fa-bell fa-lg" style="color: var(--text-muted);"></i>
+                {% if notif_count > 0 %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6em;">
+                    {{ notif_count }}
+                </span>
+                {% endif %}
+            </a>
+            <span class="navbar-text me-4 font-mono text-muted"><span class="status-dot"></span>ID: {{ user }}</span>
+            <a href="/logout" class="btn btn-outline-secondary btn-sm">DISCONNECT</a>
+        {% else %}
+            <a href="/login" class="btn btn-primary btn-sm px-4">INITIALIZE</a>
+        {% endif %}
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Main Feed -->
+        <div class="col-md-8">
+            {% if current_freq %}
+                <div class="mb-4 border-bottom border-secondary pb-2 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="text-white font-mono mb-0">f/{{ current_freq.name }}</h2>
+                        <p class="text-muted mb-0 small">{{ current_freq.description }}</p>
+                    </div>
+                    {% if user %}
+                    <form action="/f/{{ current_freq.name }}/subscribe" method="post">
+                        <button type="submit" class="btn btn-sm {% if is_subscribed %}btn-outline-secondary{% else %}btn-primary{% endif %} font-mono">
+                            {% if is_subscribed %}UNLINK{% else %}JOIN_WAVE{% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% for post in transmissions %}
+            <div class="post-card">
+                <div class="vote-column">
+                    <button class="vote-btn" onclick="resonate('post', {{ post.id }}, 1)"><i class="fas fa-chevron-up"></i></button>
+                    <span class="score" id="score-post-{{ post.id }}">{{ post.score }}</span>
+                    <button class="vote-btn" onclick="resonate('post', {{ post.id }}, -1)"><i class="fas fa-chevron-down"></i></button>
+                </div>
+                <div class="content-column">
+                    <div class="meta-line">
+                        <a href="/f/{{ post.subreddit.name }}" class="freq-link">f/{{ post.subreddit.name }}</a>
+                        <span> // </span>
+                        <span>OP: {{ post.author }}</span>
+                        <span> // </span>
+                        <span>{{ post.created_at.strftime('%H:%M') }}</span>
+                    </div>
+                    <a href="/f/{{ post.subreddit.name }}/t/{{ post.id }}" class="post-title">{{ post.title }}</a>
+                    <div class="action-bar">
+                        <a href="/f/{{ post.subreddit.name }}/t/{{ post.id }}" class="action-btn"><i class="fas fa-comment-alt"></i> {{ post.comments|length }} RESPONSES</a>
+                        <button class="action-btn"><i class="fas fa-share-alt"></i> RELAY</button>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center p-5 border border-secondary text-muted font-mono">
+                <h4>// NO SIGNAL DETECTED</h4>
+                <p>Initialize transmission to populate frequency.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <div class="sidebar">
+                <h5 class="text-white font-mono mb-3">ACCESS TERMINAL</h5>
+                <p class="small text-muted mb-4">Welcome to the ECHO network. Secure communications channel for all active agents and operators.</p>
+                <a href="/transmit" class="btn btn-primary w-100 mb-2">BROADCAST SIGNAL</a>
+            </div>
+
+            {% if user %}
+            <div class="sidebar">
+                <h6 class="d-flex justify-content-between align-items-center">
+                    MY FREQUENCIES
+                    <button class="btn btn-sm btn-outline-secondary p-0 px-1" type="button" data-bs-toggle="collapse" data-bs-target="#createFreq" style="font-size: 0.7em;">+</button>
+                </h6>
+                
+                <div class="collapse mb-3" id="createFreq">
+                    <form action="/create_frequency" method="post" class="p-2 border border-secondary">
+                        <input type="text" name="name" class="form-control form-control-sm mb-2" placeholder="Name (e.g. ops)" required>
+                        <input type="text" name="description" class="form-control form-control-sm mb-2" placeholder="Description" required>
+                        <button type="submit" class="btn btn-primary btn-sm w-100" style="font-size: 0.7em;">INIT_WAVE</button>
+                    </form>
+                </div>
+
+                <ul class="list-unstyled font-mono mb-0">
+                    {% for sub in my_subs %}
+                    <li class="mb-2"><a href="/f/{{ sub.name }}">f/{{ sub.name }}</a></li>
+                    {% else %}
+                    <li class="text-muted small">// NOT_CONNECTED</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div class="sidebar">
+                <h6>GLOBAL NETWORK</h6>
+                <ul class="list-unstyled font-mono mb-0">
+                    <li class="mb-2"><a href="/">[ALL_SIGNALS]</a></li>
+                    {% for freq in frequencies %}
+                    <li class="mb-2"><a href="/f/{{ freq.name }}">f/{{ freq.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function resonate(type, id, val) {
+    const formData = new FormData();
+    formData.append('item_type', type);
+    formData.append('item_id', id);
+    formData.append('value', val);
+    
+    try {
+        const resp = await fetch('/resonate', { method: 'POST', body: formData });
+        if (resp.ok) {
+            const data = await resp.json();
+            document.getElementById(`score-${type}-${id}`).innerText = data.score;
+        } else if (resp.status === 401) {
+            window.location.href = '/login';
+        }
+    } catch (e) { console.error(e); }
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

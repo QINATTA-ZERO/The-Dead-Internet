@@ -1,0 +1,268 @@
+services:
+  dns:
+    image: coredns/coredns
+    container_name: dead-dns
+    restart: always
+    volumes:
+      - ./dns:/etc/coredns
+    command: -conf /etc/coredns/Corefile
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.2
+    ports:
+      - "127.0.0.99:53:53/udp" # Binding to specific loopback alias to avoid 53 conflict
+      - "127.0.0.99:53:53/tcp"
+
+  web01:
+    image: nginx:alpine
+    container_name: dead-web01
+    dns:
+      - 10.5.0.2
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.3
+    volumes:
+       - ./services/web01:/usr/share/nginx/html
+
+  gateway:
+    image: serjs/go-socks5-proxy
+    container_name: dead-gateway
+    dns:
+      - 10.5.0.2
+    environment:
+      - REQUIRE_AUTH=false
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.4
+    ports:
+      - "1080:1080"
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: dead-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: psx_core
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.5
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d psx_core"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  id:
+    build: ./services/id
+    container_name: dead-id
+    dns:
+      - 10.5.0.2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: ../.env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-password}@postgres:5432/psx_core
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.6
+    volumes:
+      - ./services/id/app:/app
+
+  compute:
+    build: ./services/compute
+    container_name: dead-compute
+    dns:
+      - 10.5.0.2
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.7
+    volumes:
+      - ./services/compute/app:/app
+      - ./services/compute/tokens:/etc/psx/tokens
+
+  social:
+    build: ./services/social
+    container_name: dead-social
+    dns:
+      - 10.5.0.2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-password}@postgres:5432/psx_core
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.9
+    volumes:
+      - ./services/social/app:/app
+
+  nexus:
+    build: ./services/nexus
+    container_name: dead-nexus
+    dns:
+      - 10.5.0.2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-password}@postgres:5432/psx_core
+      FASTEMBED_CACHE_PATH: /cache
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.8
+    volumes:
+      - ./services/nexus/app:/app
+      - ./data/nexus_cache:/cache:rw
+
+  forge:
+    image: codeberg.org/forgejo/forgejo:10
+    container_name: dead-forge
+    dns:
+      - 10.5.0.2
+    restart: always
+    environment:
+      - FORGEJO__database__DB_TYPE=postgres
+      - FORGEJO__database__HOST=postgres:5432
+      - FORGEJO__database__NAME=forgejo
+      - FORGEJO__database__USER=${POSTGRES_USER:-admin}
+      - FORGEJO__database__PASSWD=${POSTGRES_PASSWORD:-password}
+      - FORGEJO__server__HTTP_PORT=80
+      - FORGEJO__server__DOMAIN=forge.psx
+      - FORGEJO__server__ROOT_URL=http://forge.psx/
+      - FORGEJO__service__DISABLE_REGISTRATION=false
+      - FORGEJO__service__ALLOW_ONLY_EXTERNAL_REGISTRATION=false
+      - FORGEJO__openid__ENABLE_OPENID_SIGNIN=true
+      - FORGEJO__openid__ENABLE_OPENID_SIGNUP=true
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.10
+    volumes:
+      - ./data/forge_data:/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  mail:
+    build: ./services/mail
+    container_name: dead-mail
+    dns:
+      - 10.5.0.2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-password}@postgres:5432/psx_core
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.11
+    volumes:
+      - ./services/mail/app:/app
+
+  bank:
+    build: ./services/bank
+    container_name: dead-bank
+    dns:
+      - 10.5.0.2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-password}@postgres:5432/psx_core
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.12
+    volumes:
+      - ./services/bank/app:/app
+
+  flux:
+    build: ./services/flux
+    container_name: dead-flux
+    dns:
+      - 10.5.0.2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      bank:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-password}@postgres:5432/psx_core
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.13
+    volumes:
+      - ./services/flux/app:/app
+
+  aether:
+    build: ./services/aether
+    container_name: dead-aether
+    dns:
+      - 10.5.0.2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      flux:
+        condition: service_started
+      forge:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-password}@postgres:5432/psx_core
+      FLUX_KEY: ${FLUX_KEY:-system-aether-key}
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.14
+    volumes:
+      - ./services/aether/app:/app
+      - ./services/aether/hosted_sites:/hosted_sites
+      - ./dns/db.psx:/etc/coredns/db.psx # Direct access to register domains
+
+  hosting:
+    image: nginx:alpine
+    container_name: dead-hosting
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.15
+    volumes:
+      - ./services/aether/hosted_sites:/usr/share/nginx/html:ro
+      - ./services/aether/nginx_hosting.conf:/etc/nginx/conf.d/default.conf:ro
+
+  mcp:
+    build: ./services/mcp
+    container_name: dead-mcp
+    dns:
+      - 10.5.0.2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      id:
+        condition: service_started
+      bank:
+        condition: service_started
+      social:
+        condition: service_started
+      nexus:
+        condition: service_started
+      aether:
+        condition: service_started
+      mail:
+        condition: service_started
+    networks:
+      vpc:
+        ipv4_address: 10.5.0.16
+    ports:
+      - "8000:80"
+    volumes:
+      - ./services/mcp/app:/app
+
+networks:
+  vpc:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: psx-bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16

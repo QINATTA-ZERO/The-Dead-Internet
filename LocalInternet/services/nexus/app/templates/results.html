@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ q }} // Nexus Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: #0a0f0d;
+            --border-color: #1a2f25;
+            --text-main: #c0dcd0;
+            --text-muted: #88a095;
+            --accent: #00ff9d;
+            --accent-dim: #00ff9d22;
+        }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Rajdhani", sans-serif; padding: 0; margin: 0; }
+        .font-mono { font-family: "Share Tech Mono", monospace; }
+        
+        .search-header { background-color: var(--panel-bg); border-bottom: 1px solid var(--border-color); padding: 20px; display: flex; align-items: center; sticky: top; }
+        .logo-small { font-family: "Share Tech Mono"; font-size: 1.8rem; font-weight: bold; color: var(--accent); text-decoration: none; margin-right: 40px; letter-spacing: -2px; }
+        
+        .form-control { background-color: #000; border: 1px solid var(--border-color); color: #fff; border-radius: 0; padding: 10px 20px; width: 500px; font-family: "Share Tech Mono"; }
+        .form-control:focus { background-color: #051510; border-color: var(--accent); color: #fff; box-shadow: none; }
+        
+        .results-container { padding: 40px; max-width: 900px; }
+        .result-meta { font-family: "Share Tech Mono"; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
+        .result-title { font-size: 1.4rem; font-weight: 600; color: var(--accent); text-decoration: none; display: block; margin-bottom: 10px; }
+        .result-title:hover { text-decoration: underline; }
+        .result-snippet { font-size: 1.05rem; line-height: 1.6; color: var(--text-main); margin-bottom: 30px; }
+        
+        .count-line { font-family: "Share Tech Mono"; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="search-header">
+    <a href="/" class="logo-small">nexus</a>
+    <form action="/search" method="get">
+        <input type="text" name="q" value="{{ q }}" class="form-control" autocomplete="off">
+    </form>
+</div>
+
+<div class="results-container">
+    <div class="count-line">
+        >> QUERY_RESULTS: [ {{ results|length }} ] // SIGNAL_STRENGTH: NOMINAL
+    </div>
+
+    {% for page in results %}
+    <div class="result">
+        <div class="result-meta">{{ page.url }}</div>
+        <a href="{{ page.url }}" class="result-title">{{ page.title }}</a>
+        <div class="result-snippet">{{ page.content[:300] }}...</div>
+    </div>
+    {% else %}
+    <div class="text-center p-5 text-muted font-mono">
+        // NO DATA FOUND FOR: "{{ q }}"
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>
