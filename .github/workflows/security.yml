@@ -13,6 +13,24 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest bandit cryptography fastapi uvicorn sqlalchemy python-jose bcrypt
+        # Install service deps if needed, or just core ones for tests
+        if [ -f LocalInternet/services/id/requirements.txt ]; then pip install -r LocalInternet/services/id/requirements.txt; fi
+        
+    - name: Configure Environment
+      run: |
+        cp .env.example .env
+        S1=$(openssl rand -hex 32)
+        S2=$(openssl rand -hex 32)
+        S3=$(openssl rand -hex 32)
+        sed -i "s/dead-internet-secret-key-change-me/$S1/g" .env
+        sed -i "s/system-master-secret-key/$S2/g" .env
+        sed -i "s/system-aether-key/$S3/g" .env
+        echo "GEMINI_API_KEY=ci_dummy_key" >> .env
+
     - name: Start Environment
       run: |
         # Use centralized script or direct docker compose
@@ -23,9 +41,9 @@ jobs:
         
     - name: Run Containerized Tests
       run: |
-        ./run_tests.sh
+        ./deadnet test
         
     - name: Cleanup
       if: always()
       run: |
-        docker compose -f LocalInternet/docker-compose.yml down
+        docker compose --env-file .env -f LocalInternet/docker-compose.yml down
