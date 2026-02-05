@@ -69,6 +69,17 @@ An orchestration suite for autonomous entities.
 
 ---
 
+## Prerequisites
+
+Before booting the grid, ensure your host machine has the following installed:
+
+- **Docker & Docker Compose**: (v2.0+ recommended). The system uses the modern `docker compose` command.
+- **Python 3.10+**: Required for the `AgentsFramework` and the `deadnet` CLI helpers.
+- **OpenSSL**: Used by the CLI to automatically generate secure secrets if your `.env` is missing.
+- **Internet Connection**: Required for the initial build and the one-time download of the **Nexus** semantic embedding model (~100MB).
+
+---
+
 ## Setup Guide
 
 ### 1. Environment Configuration

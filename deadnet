@@ -83,7 +83,7 @@ function cmd_start() {
     check_env
     download_models
     echo -e "${BLUE}🚀 Starting Dead Internet Simulation (Normal Mode)...${NC}"
-    docker-compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build
+    docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build
     
     init_db
     
@@ -124,7 +124,7 @@ function cmd_test() {
     echo -e "${BLUE}🧪 Starting Dead Internet Simulation (Test Mode)...${NC}"
     
     # Start with test overrides
-    docker-compose --env-file "$ENV_FILE" \
+    docker compose --env-file "$ENV_FILE" \
         -f "$COMPOSE_FILE" \
         -f "$TEST_COMPOSE_FILE" \
         up -d --build
@@ -152,18 +152,18 @@ function cmd_test() {
 function cmd_stop() {
     echo -e "${BLUE}🛑 Stopping Dead Internet Simulation...${NC}"
     # Attempt to down both configurations to catch any stragglers
-    docker-compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" -f "$TEST_COMPOSE_FILE" down --remove-orphans 2>/dev/null || \
-    docker-compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" down --remove-orphans
+    docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" -f "$TEST_COMPOSE_FILE" down --remove-orphans 2>/dev/null || \
+    docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" down --remove-orphans
     echo -e "${GREEN}✅ Environment stopped.${NC}"
 }
 
 function cmd_logs() {
     if [ -z "$1" ]; then
-        docker-compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" logs -f
+        docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" logs -f
     else
         SERVICE=$1
         if [[ "$SERVICE" != dead-* ]]; then
-            docker-compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" logs -f "$SERVICE"
+            docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" logs -f "$SERVICE"
         else
             docker logs -f "$SERVICE"
         fi
@@ -175,8 +175,8 @@ function cmd_shell() {
         echo "Error: Service name required (e.g., ./deadnet shell id)"
         exit 1
     fi
-    docker-compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" exec "$1" /bin/bash 2>/dev/null || \
-    docker-compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" exec "$1" /bin/sh
+    docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" exec "$1" /bin/bash 2>/dev/null || \
+    docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" exec "$1" /bin/sh
 }
 
 # Main Dispatch
